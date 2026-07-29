@@ -23,9 +23,8 @@ async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def senal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tiempo = "2"
 
-    if context.args:
-        if context.args[0] in ["1", "2", "5", "15"]:
-            tiempo = context.args[0]
+    if context.args and context.args[0] in ["1", "2", "5", "15"]:
+        tiempo = context.args[0]
 
     decision = random.choice([
         "🟢 COMPRA",
@@ -39,10 +38,7 @@ async def senal(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def mercado(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📈 Análisis DEMO\n\n"
-        "Tendencia: Alcista\n"
-        "EMA20 > EMA50\n"
-        "RSI: 56.4"
+        "📈 Análisis DEMO\n\nTendencia: Alcista\nEMA20 > EMA50\nRSI: 56.4"
     )
 
 if not TOKEN:
