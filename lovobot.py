@@ -1,68 +1,60 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import random
-from datetime import datetime
+import os
 
-TOKEN = "8895548744:AAG7ofsBSaRQpsi4wStfrNvGX4hUIjWucs8"
+TOKEN = os.getenv("BOT_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🤖 Bienvenido a LOVO SIGNALS\n\n"
-        "Comandos disponibles:\n"
-        "/start\n"
-        "/ayuda\n"
-        "/senal\n"
-        "/ping"
+        "🤖 LOVO BOT\n\nComandos:\n/start\n/ayuda\n/senal\n/mercado\n/ping"
     )
 
 async def ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📌 Comandos disponibles:\n\n"
-        "/start - Iniciar bot\n"
-        "/senal - Obtener una señal\n"
-        "/ping - Verificar que el bot está activo\n"
-        "/ayuda - Mostrar ayuda"
+        "/senal - señal demo\n"
+        "/mercado - análisis simple\n"
+        "/ping - comprobar bot"
     )
 
-async def senal(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    activos = [
-        "EUR/USD OTC",
-        "GBP/USD OTC",
-        "USD/JPY OTC",
-        "AUD/USD OTC",
-        "EUR/JPY OTC",
-        "USD/CAD OTC"
-    ]
-
-    activo = random.choice(activos)
-    direccion = random.choice(["🟢 CALL", "🔴 PUT"])
-    confianza = random.randint(82, 96)
-    hora = datetime.now().strftime("%H:%M:%S")
-
-    mensaje = f"""
-🚀 LOVO SIGNALS
-
-💱 Activo: {activo}
-📈 Dirección: {direccion}
-⏰ Hora: {hora}
-⌛ Expiración: 1 minuto
-🔥 Confianza: {confianza}%
-
-⚠️ Señal de prueba.
-"""
-
-    await update.message.reply_text(mensaje)
-
 async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🟢 Bot en línea y funcionando.")
+    await update.message.reply_text("🟢 Bot funcionando 24/7 en Render")
+
+async def senal(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    tiempo = "2"
+
+    if context.args:
+        if context.args[0] in ["1", "2", "5", "15"]:
+            tiempo = context.args[0]
+
+    decision = random.choice([
+        "🟢 COMPRA",
+        "🔴 VENTA",
+        "🟡 ESPERAR"
+    ])
+
+    await update.message.reply_text(
+        f"📊 LOVO SIGNAL\n\n💱 EUR/USD\n🎯 Señal: {decision}\n⏱ Temporalidad: {tiempo} minuto(s)"
+    )
+
+async def mercado(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "📈 Análisis DEMO\n\n"
+        "Tendencia: Alcista\n"
+        "EMA20 > EMA50\n"
+        "RSI: 56.4"
+    )
+
+if not TOKEN:
+    raise ValueError("Falta la variable BOT_TOKEN")
 
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("ayuda", ayuda))
 app.add_handler(CommandHandler("senal", senal))
+app.add_handler(CommandHandler("mercado", mercado))
 app.add_handler(CommandHandler("ping", ping))
 
-print("Bot iniciado...")
-app.run_polling() 
+print("LOVO BOT iniciado...")
+app.run_polling()
